@@ -1,0 +1,21 @@
+version: '3.5'
+networks:
+  vault-network:
+    name: vault-network
+    driver: bridge
+services:      
+  tap.vault:
+    image: vault
+    container_name: tap-vault
+    ports:
+      - 8200:8200
+    environment:
+      VAULT_API_ADDR: 'http://127.0.0.1:8200'
+    volumes:
+      - ./config:/vault/config:rw
+      - ./file:/vault/file:rw
+    entrypoint: vault server -config=/vault/config/vault.json
+    cap_add:
+      - IPC_LOCK
+    networks:
+      - vault-network
